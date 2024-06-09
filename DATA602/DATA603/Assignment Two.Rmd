@@ -1,0 +1,260 @@
+---
+title: "DATA 602 Assignment 2"
+author: "Maria Delgado"
+date: "2024-02-06"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r}
+##5.** As a budding data scientist with much promise, a person who is considering running as a Member of Parliament (MP) for a certain riding hires you to conduct some polling. Due to the time investment and the cost (time and finances) of a political campaign, you decide to take a random sample of $n = 50$ voters who live within this particular riding. Each are to be asked "if they would support this particular candidate if they ran as a reprsentative for Party X in the next federal election".  If your polling/sampling suggests that they will receive at least 45% of the vote, then you will council this person to "run for office". In your preliminary statistical work, you have decided that there is enough statistical evidence to support the "mimimum of 45%"-claim if out of $n = 50$ randomly chosen voters, at least 20 indicate they will vote for this candidate if they run. 
+
+(a) State the statistical hypotheses.
+
+#The candidate will not receive at least 45% of the vote if they run for office.
+#H0:p<0.45
+
+#The candidate will receive at least 45% of the vote if they run for office.
+#H1:p ≥ 0.45
+
+(b) Compute the value of $\alpha$ used in your derivation of the decision rule.
+
+sample_size <- 50
+min_support <- 20
+alpha <- 0.05
+critical_value <- qbinom(1 - alpha, size = sample_size, prob = 0.45)
+print(critical_value)
+
+
+(c) What if the candidate were to receive 42% of the vote. Compute the probability that you will conclude they should run for office. Interpret the meaning of this probability.
+
+p_42 <- 0.42
+# Probability of observing at least 20 supporters
+p_value <- pbinom(min_support - 1, size = sample_size, prob = p_42, lower.tail = FALSE)
+print(p_value)
+
+#The calculated p-value is 0.663807, which exceeds the significance level (alpha) of 0.05. Consequently, we fail to reject the null hypothesis. There is insufficient evidence to support the candidate in running for office. As determined earlier, a critical value of 28 indicates that one would only recommend the candidate to run if there are 28 or more supporting voters.
+
+
+
+(d) Repeat for (c) for these values of $p$: $p = 0.41, p = 0.40, p = 0.39, p = 0.38, p = 0.35$ and $p = 0.30$. For each differing value of $p$, compute the probability computed in part (c). THEN, create a plot with the differing values of $p$ on the $x$-axis and the probabilties computed on the $y$-axis. 
+
+
+sample_size <- 50
+min_support <- 20
+alpha <- 0.05
+p_values <- c(0.41, 0.40, 0.39, 0.38, 0.35, 0.30)
+probabilities <- numeric(length(p_values))
+for (i in seq_along(p_values)) {
+  # Calculate probability
+  probabilities[i] <- pbinom(min_support - 1, size = sample_size, prob = p_values[i], lower.tail = FALSE)
+}
+
+results <- data.frame(p = p_values, probability = probabilities)
+print(results)
+plot(p_values, probabilities, type = "b", main = "Probability & Respective p- pvalue",
+     xlab = "Values of p", ylab = "Probability",
+     ylim = c(0, 0.8))
+
+points(0.45, alpha, col = "red", pch = 16)
+text(0.45, alpha, "  Critical Value", pos = 2)
+
+
+(e) What does your plot/graph in part (d) tell you about your statistical test? How can you improve your test? Provide some suggestion(s), reasoning why each would make your statisical test better. 
+</br>
+</br>
+
+#From this plot we see the value of p decreases, the probability of observing at least 20 supporters (the minimum for advising to run) also decreases. This test might be improved my increasing the sample size which could lead to a more precise estimate. We could also adjust the significance test depending on the tolerance for type errors 
+
+
+```
+
+```{r}
+#QUESTION TWO PART ONE
+
+lc50 = c(16, 5, 21, 19, 10, 5, 8, 2, 7, 2, 4, 9)
+M = do(2000)*mean(sample(lc50, replace = TRUE))
+dim(M)
+head(M)
+
+ggplot(data = M, aes(x = M$mean)) +
+  geom_histogram(color = "lightblue", fill = "lightblue", bins = 30) +
+  xlab("Values of Bootstrap Mean") +
+  ylab("Count") +
+  ggtitle("Distribution of Bootstrap Statistic: Sample Mean") +
+  geom_vline(xintercept = mean(lc50), color = "red", linetype = "dashed") +
+  theme_minimal()
+
+#QUESTION TWO, PART TWO
+
+lc50 <- c(16, 5, 21, 19, 10, 5, 8, 2, 7, 2, 4, 9)
+library(mosaic)
+M <- do(2000) * mean(sample(lc50, replace = TRUE))
+# Compute 95% bootstrap percentile confidence interval
+lower_bound <- quantile(M$mean, 0.025)
+upper_bound <- quantile(M$mean, 0.975)
+cat("95% Bootstrap Percentile Confidence Interval for μLC50:", "(", lower_bound, ",", upper_bound, ")")
+
+#QUESTION TWO, PART THREE:
+
+lc50 = c(16, 5, 21, 19, 10, 5, 8, 2, 7, 2, 4, 9)
+#density plot of the sample 
+densityplot(lc50, xlab="values of mean", main="Distribution of Sample Mean")
+n = length(lc50)
+t = qt(0.975, n-1)
+UL = mean(lc50) + t*sd(lc50)/sqrt(n)
+LL = mean(lc50) - t*sd(lc50)/sqrt(n)
+cat("95% CI for mean lc50 measurement is", "(", LL, ",", UL, ")")
+#Conditions & Assumptions Include: Using default value 0.95 confidence interval, normal distribution, random sampling, used for smaller population sizes, and unknown population standard deviation. 
+
+
+#QUESTION TWO, PART FOUR: 
+
+#Part b results = ( 5.75 , 12.66667 )
+#Part c results =  ( 4.91814 , 13.08186 )
+#We want a tighter dispersion so; in this case we want to report a tighter interval so I prefer the interval from Bootstrap
+
+
+```
+
+```{r}
+#QUESTION THREE: PART ONE
+
+library(mosaic)
+n_hs_or_less <- 670
+n_disagree_hs_or_less <- 348
+p_original <- n_disagree_hs_or_less / n_hs_or_less
+B <- do(1000) * {
+  
+  sampled_data <- resample(c(rep(1, n_disagree_hs_or_less), rep(0, n_hs_or_less - n_disagree_hs_or_less)), n_hs_or_less)
+  p_bootstrap <- mean(sampled_data)
+  
+  data.frame(mean = p_bootstrap)
+}
+
+lower_quantile <- quantile(B$mean, 0.025)
+upper_quantile <- quantile(B$mean, 0.975)
+
+ggplot(data = B, aes(x = mean)) +
+  geom_histogram(color = "green", fill = "green") +
+  xlab("Values of Bootstrap proportion") +
+  ylab("Count") +
+  ggtitle("Distribution of Bootstrap Statistic: Sample Proportion") 
+
+#QUESTION THREE: PART TWO
+
+n_undergrad_or_more <- 376
+n_disagree_undergrad_or_more <- 274
+
+p_original_undergrad_or_more <- n_disagree_undergrad_or_more / n_undergrad_or_more
+
+
+B_undergrad_or_more <- do(1000) * {
+  
+  sampled_data_undergrad_or_more <- resample(c(rep(1, n_disagree_undergrad_or_more), rep(0, n_undergrad_or_more - n_disagree_undergrad_or_more)), n_undergrad_or_more)
+  
+  
+  p_bootstrap_undergrad_or_more <- mean(sampled_data_undergrad_or_more)
+  
+  data.frame(mean = p_bootstrap_undergrad_or_more)
+}
+
+
+lower_quantile_undergrad_or_more <- quantile(B_undergrad_or_more$mean, 0.025)
+upper_quantile_undergrad_or_more <- quantile(B_undergrad_or_more$mean, 0.975)
+
+
+ggplot(data = B_undergrad_or_more, aes(x = mean)) +
+  geom_histogram(color = "lightblue", fill = "lightblue") +
+  xlab("Values of Bootstrap proportion") +
+  ylab("Count") +
+  ggtitle("Distribution of Bootstrap Statistic: Sample proportion (Undergraduate or More)")
+
+#QUESTION THREE PART THREE
+
+n_hs_or_less <- 670
+n_disagree_hs_or_less <- 348
+
+n_undergrad_or_more <- 376
+n_disagree_undergrad_or_more <- 274
+
+p_original_hs_or_less <- n_disagree_hs_or_less / n_hs_or_less
+p_original_undergrad_or_more <- n_disagree_undergrad_or_more / n_undergrad_or_more
+
+B_hs_or_less <- do(1000) * {
+  
+  sampled_data_hs_or_less <- resample(c(rep(1, n_disagree_hs_or_less), rep(0, n_hs_or_less - n_disagree_hs_or_less)), n_hs_or_less)
+  
+  
+  p_bootstrap_hs_or_less <- mean(sampled_data_hs_or_less)
+  
+  sampled_data_undergrad_or_more <- resample(c(rep(1, n_disagree_undergrad_or_more), rep(0, n_undergrad_or_more - n_disagree_undergrad_or_more)), n_undergrad_or_more)
+  
+  p_bootstrap_undergrad_or_more <- mean(sampled_data_undergrad_or_more)
+  
+  diff_proportions <- p_bootstrap_undergrad_or_more - p_bootstrap_hs_or_less
+  
+  data.frame(diff_proportions = diff_proportions)
+}
+
+
+lower_quantile_diff_proportions <- quantile(B_hs_or_less$diff_proportions, 0.025)
+upper_quantile_diff_proportions <- quantile(B_hs_or_less$diff_proportions, 0.975)
+
+
+ggplot(data = B_hs_or_less, aes(x = diff_proportions)) +
+  geom_histogram(color = "lightblue", fill = "lightblue") +
+  xlab("Difference in Proportions (Uni - HS)") +
+  ylab("Count") +
+  ggtitle("Distribution of Bootstrap Statistic: Difference in Proportions") +
+  geom_vline(xintercept = lower_quantile_diff_proportions, color = "red") +
+  geom_vline(xintercept = upper_quantile_diff_proportions, color = "red")
+
+#QUESTION THREE, PART FOUR: # Calculate the 95% bootstrap percentile confidence interval
+conf_interval_diff_proportions <- quantile(B_hs_or_less$diff_proportions, c(0.025, 0.975))
+conf_interval_diff_proportions
+
+#Findings from bootstrap simulation show that the proportion of individuals with an education level higher than high school who disagree with the statement about the clarity of the science around vaccination is greater than the proportion of individuals with an education level equal to or less than high school. This is supported by the distribution of simulated differences, which yielded values greater than 0. The 95% confidence interval for the difference in proportions, ranging from 0.146708 to 0.2651816, further supports this. This interval suggests that, with 95% confidence, the true difference in proportions favors individuals with a higher education level than high school.
+
+
+```
+
+
+
+```{r}
+
+
+```
+
+
+
+```{r}
+#QUESTION FIVE, PART ONE
+prop.test(128+2, 399+4, correct=FALSE)$conf
+
+#QUESTION FIVE, PART TWO
+conservative = 128 + 2  # Conservative Respondents
+n_total = 399 + 4  # Total 
+num_replications = 1000  
+bootstrap <- numeric(num_replications)
+
+for (i in 1:num_replications) {
+  
+  bootstrap_sample <- sample(c(rep(1, conservative), rep(0, n_total - conservative)), n_total, replace = TRUE)
+  
+  
+  bootstrap[i] <- sum(bootstrap_sample) / n_total
+}
+head(bootstrap)
+
+#QUESTION FIVE, PART THREE
+conf_interval <- quantile(bootstrap, c(0.025, 0.975))
+conf_interval
+
+#QUESTION FIVE, PART FOUR
+#Would want to use the tighter dispersion, for more accuracy. In this case would use bootstrap.
+
+```
+
+
