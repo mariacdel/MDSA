@@ -1,3 +1,5 @@
+<div style="text-align: left;">
+
 # Master of Data Science and Analytics Program
 
 **University of Calgary**
@@ -12,3 +14,5 @@
 6. **DATA606 - Statistical Methods in Data Science**
 7. **DATA607 - Machine Learning**
 8. **DATA608 - Developing Big Data Applications**
+
+</div>
