@@ -16,8 +16,8 @@ Dashboard screenshots can be found in the **[Images](images/)** folder within th
 
 The Logistics Performance Dashboard is designed to support the Logistics team in monitoring and evaluating delivery operations. It provides visibility into route planning accuracy, execution performance, and delivery service reliability, enabling the team to identify operational variances, monitor service levels, and investigate performance issues across delivery routes.
 
-![Logistics Dashboard Overview](images/Logistics%20Dashboard%20Overview.png)
-*High-level overview of logistics operations and delivery performance metrics*
+![Logistics Dashboard Overview](images/Logistics-Dashboard-Overview.png)
+*Navigation overview for users — includes technical owner, data sources, and instructions on how to use the dashboard*
 
 ![Delivery Service Performance](images/Delivery%20Service%20Performance.png)
 *Tracks on-time delivery rates and service performance across all routes*
