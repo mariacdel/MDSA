@@ -10,7 +10,8 @@ A sample of assignments and final projects that demonstrate my knowledge and pro
 
 ## Sample Dashboard Work (Power BI)
 
-Below are examples of dashboard work developed in Power BI.
+Below are examples of dashboard work developed in Power BI.  
+Dashboard screenshots can be found in the **Images** folder within this repository.
 
 *All data shown in screenshots has been modified (including potential identifiers) to protect client privacy.*
 
@@ -20,8 +21,8 @@ The Logistics Performance Dashboard is designed to support the Logistics team in
 
 <!-- Add your images below -->
 <!-- Example:
-![Logistics Dashboard Overview](images/logistics_dashboard_1.png)
-![Route Performance](images/logistics_dashboard_2.png)
+![Logistics Dashboard Overview](Images/logistics_dashboard_1.png)
+![Route Performance](Images/logistics_dashboard_2.png)
 -->
 
 ---
