@@ -1,4 +1,4 @@
-# Master of Data Science and Analytics Program
+# Master of Data Science & Professional Experience Portfolio
 **University of Calgary**
 
 A sample of assignments and final projects that demonstrate my knowledge and proficiency in the Master of Data Science and Analytics program, completed with a 3.8/4 GPA.
